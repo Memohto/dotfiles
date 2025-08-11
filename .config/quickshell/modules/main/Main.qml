@@ -38,6 +38,20 @@ Variants {
             anchors.left: true
             anchors.right: true
 
+            PersistentProperties {
+                id: visibilities
+
+                property bool session
+
+                Component.onCompleted: Visibilities.load(scope.modelData, this)
+            }
+
+            Interactions {
+              id: interactions
+
+              bar: bar
+            }
+
             Item {
                 anchors.fill: parent
                 layer.enabled: true
@@ -50,14 +64,6 @@ Variants {
                 Border {
                     bar: bar
                 }
-            }
-
-            PersistentProperties {
-                id: visibilities
-
-                property bool session
-
-                Component.onCompleted: Visibilities.load(scope.modelData, this)
             }
 
             Panels {

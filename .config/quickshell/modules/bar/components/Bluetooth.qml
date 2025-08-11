@@ -5,7 +5,8 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 import Quickshell.Widgets
-import Quickshell.Bluetooth
+
+// import Quickshell.Bluetooth
 
 Text {
     id: root
@@ -13,11 +14,13 @@ Text {
     property real fill
     property int grade: -25
 
-    text: "bluetooth"
+    property bool isHovered: false
+
+    text: Bluetooth.icon
 
     renderType: Text.NativeRendering
     textFormat: Text.PlainText
-    color: "#ffffff"
+    color: Bluetooth.isConnected ? "#798FFC" : "#ffffff"
 
     font.bold: true
     font.family: Config.general.fontFamily.material
@@ -29,8 +32,25 @@ Text {
             wght: fontInfo.weight
         })
 
-    Component.onCompleted: {
-        console.log(Bluetooth.defaultAdapter.state);
+    function showPopup() {
+        isHovered = true;
+        popupLoader.item.visible = true;
+    }
+
+    function hidePopup() {
+        isHovered = false;
+        popupLoader.item.visible = false;
+    }
+
+    function activate() {
+        process.startDetached();
+    }
+
+    Process {
+        id: process
+
+        running: false
+        command: ["kitty", "--class", "QuickshellFloat", "bluetui"]
     }
 
     ClippingRectangle {
@@ -42,7 +62,7 @@ Text {
         implicitWidth: parent.implicitHeight + Config.general.padding.large
         implicitHeight: parent.implicitHeight * 1.5
 
-        color: Qt.alpha(mouseArea.color, mouseArea.containsMouse ? 1 : 0)
+        color: Qt.alpha("#171717", root.isHovered ? 1 : 0)
         topRightRadius: Config.general.rounding.full
         topLeftRadius: Config.general.rounding.full
 
@@ -52,7 +72,6 @@ Text {
             id: ripple
 
             radius: Config.general.rounding.full
-            color: mouseArea.color
             opacity: 0
 
             transform: Translate {
@@ -62,30 +81,72 @@ Text {
         }
     }
 
-    MouseArea {
-        id: mouseArea
+    PanelWindow {
+        id: popupWindow
 
-        property color color: "#171717"
+        implicitWidth: 300
+        implicitHeight: 150
 
-        anchors.fill: undefined
-        anchors.centerIn: parent
-        anchors.horizontalCenterOffset: 1
+        color: "transparent"
 
-        implicitWidth: parent.implicitHeight + Config.general.padding.smaller
-        implicitHeight: parent.implicitHeight * 1.5
-
-        cursorShape: Qt.PointingHandCursor
-        hoverEnabled: true
-
-        Process {
-            id: process
-
-            running: false
-            command: ["kitty", "--class", "QuickshellFloat", "bluetui"]
+        anchors {
+            top: true
+            right: true
         }
 
-        onClicked: mouse => {
-            process.startDetached();
+        LazyLoader {
+            id: popupLoader
+
+            loading: true
+
+            PopupWindow {
+                id: popup
+
+                anchor.window: popupWindow
+                implicitWidth: popupWindow.implicitWidth
+                implicitHeight: popupWindow.implicitHeight
+
+                color: "transparent"
+
+                Rectangle {
+                    id: popupContent
+
+                    anchors.fill: parent
+                    bottomLeftRadius: Config.general.rounding.small
+
+                    color: "#171717"
+
+                    Column {
+                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.centerIn: parent
+
+                        Text {
+                            color: "#ffffff"
+                            font.pointSize: Config.general.fontSize.small
+                            font.family: Config.general.fontFamily.mono
+                            font.bold: true
+
+                            text: "Bluetooth info\n\n"
+                        }
+
+                        Text {
+                            color: "#ffffff"
+                            font.pointSize: Config.general.fontSize.smaller
+                            font.family: Config.general.fontFamily.mono
+
+                            text: "Status: " + Bluetooth.state
+                        }
+
+                        Text {
+                            color: "#ffffff"
+                            font.pointSize: Config.general.fontSize.smaller
+                            font.family: Config.general.fontFamily.mono
+
+                            text: "Connected device:\n  " + (Bluetooth.connectedDevice ? Bluetooth.connectedDeviceName + " (󰁾 " + Bluetooth.connectedDeviceBattery + "%)" : "No device")
+                        }
+                    }
+                }
+            }
         }
     }
 }

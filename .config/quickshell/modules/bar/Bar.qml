@@ -18,6 +18,60 @@ Item {
 
     implicitHeight: components.implicitHeight + Config.border.thickness * 2
 
+    function checkPopout(x: real, y: real): void {
+        if (x >= utilsContainer.x && x <= utilsContainer.x + utilsContainer.width && y <= height) {
+            var relativeX = x - utilsContainer.x;
+            var itemWidth = utilsContainer.width / 3;
+            var child = null;
+
+            if (relativeX <= itemWidth) {
+                child = utils.children[0];
+            } else if (relativeX <= itemWidth * 2) {
+                child = utils.children[1];
+            } else {
+                child = utils.children[2];
+            }
+
+            for (var i = 0; i < utils.children.length; i++) {
+                if (child == utils.children[i]) {
+                    utils.children[i].showPopup();
+                } else {
+                    utils.children[i].hidePopup();
+                }
+            }
+        } else {
+            for (var i = 0; i < utils.children.length; i++) {
+                utils.children[i].hidePopup();
+            }
+        }
+    }
+
+    function closePopouts(): void {
+        for (var i = 0; i < utils.children.length; i++) {
+            utils.children[i].hidePopup();
+        }
+    }
+
+    function checkUtils(x: real, y: real): void {
+        if (x >= utilsContainer.x && x <= utilsContainer.x + utilsContainer.width && y <= height) {
+            var relativeX = x - utilsContainer.x;
+            var itemWidth = utilsContainer.width / 3;
+            var child = null;
+
+            if (relativeX <= itemWidth) {
+                child = utils.children[0];
+            } else if (relativeX <= itemWidth * 2) {
+                child = utils.children[1];
+            } else {
+                child = utils.children[2];
+            }
+
+            if (child) {
+                child.activate();
+            }
+        }
+    }
+
     Item {
         id: components
 

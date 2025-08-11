@@ -9,6 +9,7 @@ JsonObject {
     readonly property Anim anim: Anim {}
 
     component Rounding: JsonObject {
+        readonly property int smaller: 5
         readonly property int small: 12
         readonly property int normal: 17
         readonly property int large: 25
@@ -40,7 +41,7 @@ JsonObject {
     }
 
     component FontSize: JsonObject {
-        readonly property int smaller: 11
+        readonly property int smaller: 10
         readonly property int small: 12
         readonly property int normal: 13
         readonly property int large: 15

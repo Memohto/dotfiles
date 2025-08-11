@@ -12,11 +12,13 @@ Text {
     property real fill
     property int grade: -25
 
+    property bool isHovered: false
+
     text: Battery.icon
 
     renderType: Text.NativeRendering
     textFormat: Text.PlainText
-    color: Battery.isCritical || Battery.isEmpty ? "red" : "#ffffff"
+    color: Battery.isCritical || Battery.isEmpty ? "#FF866E" : "#ffffff"
 
     font.bold: true
     font.family: Config.general.fontFamily.material
@@ -28,6 +30,19 @@ Text {
             wght: fontInfo.weight
         })
 
+    function showPopup() {
+        isHovered = true;
+        popupLoader.item.visible = true;
+    }
+
+    function hidePopup() {
+        isHovered = false;
+        popupLoader.item.visible = false;
+    }
+
+    function activate() {
+    }
+
     ClippingRectangle {
         id: hoverLayer
 
@@ -37,7 +52,7 @@ Text {
         implicitWidth: parent.implicitHeight + Config.general.padding.large
         implicitHeight: parent.implicitHeight * 1.5
 
-        color: Qt.alpha(mouseArea.color, mouseArea.containsMouse ? 1 : 0)
+        color: Qt.alpha("#171717", root.isHovered ? 1 : 0)
         topRightRadius: Config.general.rounding.full
         topLeftRadius: Config.general.rounding.full
 
@@ -47,7 +62,6 @@ Text {
             id: ripple
 
             radius: Config.general.rounding.full
-            color: mouseArea.color
             opacity: 0
 
             transform: Translate {
@@ -57,23 +71,88 @@ Text {
         }
     }
 
-    MouseArea {
-        id: mouseArea
+    PanelWindow {
+        id: popupWindow
 
-        property color color: "#171717"
+        implicitWidth: 275
+        implicitHeight: 130
 
-        anchors.fill: undefined
-        anchors.centerIn: parent
-        anchors.horizontalCenterOffset: 1
+        color: "transparent"
 
-        implicitWidth: parent.implicitHeight + Config.general.padding.smaller
-        implicitHeight: parent.implicitHeight * 1.5
+        anchors {
+            top: true
+            right: true
+        }
 
-        cursorShape: Qt.PointingHandCursor
-        hoverEnabled: true
+        LazyLoader {
+            id: popupLoader
 
-        onClicked: mouse => {
-            console.log("Wifi clickde");
+            loading: true
+
+            PopupWindow {
+                id: popup
+
+                anchor.window: popupWindow
+                implicitWidth: popupWindow.implicitWidth
+                implicitHeight: popupWindow.implicitHeight
+
+                color: "transparent"
+
+                Rectangle {
+                    id: popupContent
+
+                    anchors.fill: parent
+                    bottomLeftRadius: Config.general.rounding.small
+
+                    color: "#171717"
+
+                    Column {
+                        id: popupCol
+
+                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.centerIn: parent
+                        
+                        Component.onCompleted: {
+                            console.log(width);
+                            console.log()
+                            console.log(title.width);
+                            console.log(text1.width);
+                            console.log(text2.width);
+                        }
+
+                        Text {
+                            id: title
+
+                            color: "#ffffff"
+                            font.pointSize: Config.general.fontSize.small
+                            font.family: Config.general.fontFamily.mono
+                            font.bold: true
+
+                            text: "Battery info\n\n"
+                        }
+
+                        Text {
+                            id: text1
+
+                            color: "#ffffff"
+                            font.pointSize: Config.general.fontSize.smaller
+                            font.family: Config.general.fontFamily.mono
+
+                            text: "Status: " + UPowerDeviceState.toString(Battery.state)
+                        }
+
+                        Text {
+                            id: text2
+
+                            color: "#ffffff"
+                            font.pointSize: Config.general.fontSize.smaller
+                            font.family: Config.general.fontFamily.mono
+
+                            text: "Percent: " + Battery.percentage * 100 + "%"
+                        }
+                    }
+                }
+            }
         }
     }
 }

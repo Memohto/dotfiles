@@ -4,17 +4,17 @@ import Quickshell
 import Quickshell.Services.UPower
 
 Singleton {
-    property var chargeState: UPower.devices.values[0].state
-    property bool isCharging: chargeState == UPowerDeviceState.Charging
-    property bool isPluggedIn: isCharging || chargeState == UPowerDeviceState.PendingCharge
-    property real percentage: UPower.devices.values[0].percentage
+    property var state: UPower.displayDevice.state
+    property bool isCharging: state == UPowerDeviceState.Charging
+    property bool isPluggedIn: isCharging || state == UPowerDeviceState.PendingCharge
+    property real percentage: UPower.displayDevice.percentage
 
     property bool isAlmostFull: percentage <= 0.90
     property bool isVeryGood: percentage <= 0.80
-    property bool isGood: percentage <= 0.75
+    property bool isGood: percentage <= 0.60
     property bool isHalf: percentage <= 0.50
-    property bool isLow: percentage <= 0.25
-    property bool isCritical: percentage <= 0.1
+    property bool isLow: percentage <= 0.30
+    property bool isCritical: percentage <= 0.15
     property bool isEmpty: percentage <= 0.02
 
     property string icon: {
