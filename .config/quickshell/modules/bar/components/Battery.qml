@@ -18,7 +18,15 @@ Text {
 
     renderType: Text.NativeRendering
     textFormat: Text.PlainText
-    color: Battery.isCritical || Battery.isEmpty ? "#FF866E" : "#ffffff"
+    color: {
+        if (Battery.percentage >= 0.75) {
+            return "#71BF8C";
+        }
+        if (Battery.percentage <= 0.25) {
+            return "#FF866E";
+        }
+        return "#FFFFFF";
+    }
 
     font.bold: true
     font.family: Config.general.fontFamily.material
@@ -32,12 +40,12 @@ Text {
 
     function showPopup() {
         isHovered = true;
-        popupLoader.item.visible = true;
+    // popupLoader.item.visible = true;
     }
 
     function hidePopup() {
         isHovered = false;
-        popupLoader.item.visible = false;
+    // popupLoader.item.visible = false;
     }
 
     function activate() {
@@ -71,88 +79,88 @@ Text {
         }
     }
 
-    PanelWindow {
-        id: popupWindow
-
-        implicitWidth: 275
-        implicitHeight: 130
-
-        color: "transparent"
-
-        anchors {
-            top: true
-            right: true
-        }
-
-        LazyLoader {
-            id: popupLoader
-
-            loading: true
-
-            PopupWindow {
-                id: popup
-
-                anchor.window: popupWindow
-                implicitWidth: popupWindow.implicitWidth
-                implicitHeight: popupWindow.implicitHeight
-
-                color: "transparent"
-
-                Rectangle {
-                    id: popupContent
-
-                    anchors.fill: parent
-                    bottomLeftRadius: Config.general.rounding.small
-
-                    color: "#171717"
-
-                    Column {
-                        id: popupCol
-
-                        anchors.verticalCenter: parent.verticalCenter
-                        anchors.centerIn: parent
-                        
-                        Component.onCompleted: {
-                            console.log(width);
-                            console.log()
-                            console.log(title.width);
-                            console.log(text1.width);
-                            console.log(text2.width);
-                        }
-
-                        Text {
-                            id: title
-
-                            color: "#ffffff"
-                            font.pointSize: Config.general.fontSize.small
-                            font.family: Config.general.fontFamily.mono
-                            font.bold: true
-
-                            text: "Battery info\n\n"
-                        }
-
-                        Text {
-                            id: text1
-
-                            color: "#ffffff"
-                            font.pointSize: Config.general.fontSize.smaller
-                            font.family: Config.general.fontFamily.mono
-
-                            text: "Status: " + UPowerDeviceState.toString(Battery.state)
-                        }
-
-                        Text {
-                            id: text2
-
-                            color: "#ffffff"
-                            font.pointSize: Config.general.fontSize.smaller
-                            font.family: Config.general.fontFamily.mono
-
-                            text: "Percent: " + Battery.percentage * 100 + "%"
-                        }
-                    }
-                }
-            }
-        }
-    }
+    // PanelWindow {
+    //     id: popupWindow
+    //
+    //     implicitWidth: 275
+    //     implicitHeight: 130
+    //
+    //     color: "transparent"
+    //
+    //     anchors {
+    //         top: true
+    //         right: true
+    //     }
+    //
+    //     LazyLoader {
+    //         id: popupLoader
+    //
+    //         loading: true
+    //
+    //         PopupWindow {
+    //             id: popup
+    //
+    //             anchor.window: popupWindow
+    //             implicitWidth: popupWindow.implicitWidth
+    //             implicitHeight: popupWindow.implicitHeight
+    //
+    //             color: "transparent"
+    //
+    //             Rectangle {
+    //                 id: popupContent
+    //
+    //                 anchors.fill: parent
+    //                 bottomLeftRadius: Config.general.rounding.small
+    //
+    //                 color: "#171717"
+    //
+    //                 Column {
+    //                     id: popupCol
+    //
+    //                     anchors.verticalCenter: parent.verticalCenter
+    //                     anchors.centerIn: parent
+    //
+    //                     Component.onCompleted: {
+    //                         console.log(width);
+    //                         console.log()
+    //                         console.log(title.width);
+    //                         console.log(text1.width);
+    //                         console.log(text2.width);
+    //                     }
+    //
+    //                     Text {
+    //                         id: title
+    //
+    //                         color: "#ffffff"
+    //                         font.pointSize: Config.general.fontSize.small
+    //                         font.family: Config.general.fontFamily.mono
+    //                         font.bold: true
+    //
+    //                         text: "Battery info\n\n"
+    //                     }
+    //
+    //                     Text {
+    //                         id: text1
+    //
+    //                         color: "#ffffff"
+    //                         font.pointSize: Config.general.fontSize.smaller
+    //                         font.family: Config.general.fontFamily.mono
+    //
+    //                         text: "Status: " + UPowerDeviceState.toString(Battery.state)
+    //                     }
+    //
+    //                     Text {
+    //                         id: text2
+    //
+    //                         color: "#ffffff"
+    //                         font.pointSize: Config.general.fontSize.smaller
+    //                         font.family: Config.general.fontFamily.mono
+    //
+    //                         text: "Percent: " + Battery.percentage * 100 + "%"
+    //                     }
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }
 }

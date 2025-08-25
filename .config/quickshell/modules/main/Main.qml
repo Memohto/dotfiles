@@ -30,26 +30,51 @@ Variants {
 
             WlrLayershell.namespace: "quickshell-main"
             WlrLayershell.exclusionMode: ExclusionMode.Ignore
-            WlrLayershell.layer: WlrLayer.Background
-            WlrLayershell.keyboardFocus: WlrKeyboardFocus.OnDemand
+            WlrLayershell.keyboardFocus: visibilities.session ? WlrKeyboardFocus.OnDemand : WlrKeyboardFocus.None
+
+            mask: Region {
+                x: Config.border.thickness
+                y: bar.implicitHeight
+                width: win.width - Config.border.thickness * 2
+                height: win.height - bar.implicitHeight - Config.border.thickness
+                intersection: Intersection.Xor
+
+                regions: regions.instances
+            }
 
             anchors.top: true
             anchors.bottom: true
             anchors.left: true
             anchors.right: true
 
-            PersistentProperties {
-                id: visibilities
+            Variants {
+                id: regions
 
-                property bool session
+                model: panels.children
 
-                Component.onCompleted: Visibilities.load(scope.modelData, this)
+                Region {
+                    required property Item modelData
+
+                    x: modelData.x + Config.border.thickness
+                    y: modelData.y + bar.implicitHeight
+                    width: modelData.width
+                    height: modelData.height
+                    intersection: Intersection.Subtract
+                }
             }
 
-            Interactions {
-              id: interactions
+            Rectangle {
+                anchors.fill: parent
+                opacity: visibilities.session ? 0.5 : 0
+                color: "#000000"
 
-              bar: bar
+                Behavior on opacity {
+                    NumberAnimation {
+                        duration: Config.general.anim.durations.normal
+                        easing.type: Easing.BezierSpline
+                        easing.bezierCurve: Config.general.anim.curves.standard
+                    }
+                }
             }
 
             Item {
@@ -64,13 +89,35 @@ Variants {
                 Border {
                     bar: bar
                 }
+
+                Backgrounds {
+                    panels: panels
+                    bar: bar
+                }
             }
 
-            Panels {
-                id: panels
+            PersistentProperties {
+                id: visibilities
 
+                property bool osd
+                property bool session
+
+                Component.onCompleted: Visibilities.load(scope.modelData, this)
+            }
+
+            Interactions {
+                screen: scope.modelData
                 visibilities: visibilities
+                panels: panels
                 bar: bar
+
+                Panels {
+                    id: panels
+
+                    screen: scope.modelData
+                    visibilities: visibilities
+                    bar: bar
+                }
             }
 
             Bar {

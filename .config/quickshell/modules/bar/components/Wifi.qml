@@ -31,12 +31,12 @@ Text {
 
     function showPopup() {
         isHovered = true;
-        popupLoader.item.visible = true;
+        // popupLoader.item.visible = true;
     }
 
     function hidePopup() {
         isHovered = false;
-        popupLoader.item.visible = false;
+        // popupLoader.item.visible = false;
     }
 
     function activate() {
@@ -79,53 +79,53 @@ Text {
         }
     }
 
-    PanelWindow {
-        id: popupWindow
-
-        implicitWidth: 275
-        implicitHeight: 150
-
-        color: "transparent"
-
-        anchors {
-            top: true
-            right: true
-        }
-
-        LazyLoader {
-            id: popupLoader
-
-            loading: true
-
-            PopupWindow {
-                id: popup
-
-                anchor.window: popupWindow
-                implicitWidth: popupWindow.implicitWidth
-                implicitHeight: popupWindow.implicitHeight
-
-                color: "transparent"
-
-                Rectangle {
-                    id: popupContent
-
-                    anchors.fill: parent
-                    bottomLeftRadius: Config.general.rounding.small
-
-                    color: "#171717"
-
-                    Text {
-                        anchors.verticalCenter: parent.verticalCenter
-                        anchors.centerIn: parent
-
-                        color: "#ffffff"
-                        font.pointSize: Config.general.fontSize.small
-                        font.family: Config.general.fontFamily.mono
-
-                        text: "Wifi popup"
-                    }
-                }
-            }
-        }
-    }
+    // PanelWindow {
+    //     id: popupWindow
+    //
+    //     implicitWidth: 275
+    //     implicitHeight: 150
+    //
+    //     color: "transparent"
+    //
+    //     anchors {
+    //         top: true
+    //         right: true
+    //     }
+    //
+    //     LazyLoader {
+    //         id: popupLoader
+    //
+    //         loading: true
+    //
+    //         PopupWindow {
+    //             id: popup
+    //
+    //             anchor.window: popupWindow
+    //             implicitWidth: popupWindow.implicitWidth
+    //             implicitHeight: popupWindow.implicitHeight
+    //
+    //             color: "transparent"
+    //
+    //             Rectangle {
+    //                 id: popupContent
+    //
+    //                 anchors.fill: parent
+    //                 bottomLeftRadius: Config.general.rounding.small
+    //
+    //                 color: "#171717"
+    //
+    //                 Text {
+    //                     anchors.verticalCenter: parent.verticalCenter
+    //                     anchors.centerIn: parent
+    //
+    //                     color: "#ffffff"
+    //                     font.pointSize: Config.general.fontSize.small
+    //                     font.family: Config.general.fontFamily.mono
+    //
+    //                     text: "Wifi popup"
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }
 }

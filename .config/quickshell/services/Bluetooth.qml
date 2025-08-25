@@ -4,14 +4,14 @@ import Quickshell
 import Quickshell.Bluetooth
 
 Singleton {
-    property string state: BluetoothAdapterState.toString(Bluetooth.defaultAdapter.state)
-    property bool isOn: Bluetooth.defaultAdapter.enabled
+    property string state: BluetoothAdapterState.toString(Bluetooth.defaultAdapter?.state)
+    property bool isOn: Bluetooth.defaultAdapter?.enabled ?? false
     property var connectedDevice
 
     property bool isConnected: {
         var isConnected = false;
 
-        var devices = Bluetooth.defaultAdapter.devices.values;
+        var devices = Bluetooth.defaultAdapter?.devices.values ?? 0
         for (var i = 0; i < devices.length; i++) {
             if (devices[i].connected) {
                 isConnected = true;

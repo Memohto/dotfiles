@@ -13,8 +13,8 @@ Singleton {
     property bool isVeryGood: percentage <= 0.80
     property bool isGood: percentage <= 0.60
     property bool isHalf: percentage <= 0.50
-    property bool isLow: percentage <= 0.30
-    property bool isCritical: percentage <= 0.15
+    property bool isLow: percentage <= 0.25
+    property bool isCritical: percentage <= 0.10
     property bool isEmpty: percentage <= 0.02
 
     property string icon: {

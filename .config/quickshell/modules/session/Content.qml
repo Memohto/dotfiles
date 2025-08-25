@@ -3,6 +3,7 @@ pragma ComponentBehavior: Bound
 import "root:/config"
 
 import Quickshell
+import Quickshell.Widgets
 import QtQuick
 
 Column {
@@ -18,26 +19,31 @@ Column {
     spacing: Config.general.spacing.large
 
     SessionButton {
+        id: shutdown
+
+        icon: "power_settings_new"
+        command: ["systemctl", "poweroff"]
+    }
+
+    SessionButton {
         id: logout
 
         icon: "logout"
         command: ["loginctl", "terminate-user", ""]
+    }
 
-        // KeyNavigation.down: shutdown
+    SessionButton {
+        id: hibernate
 
-        // Connections {
-        //     target: root.visibilities
-        //
-        //     function onSessionChanged(): void {
-        //         if (root.visibilities.session)
-        //             logout.focus = true;
-        //     }
-        //
-        //     function onLauncherChanged(): void {
-        //         if (root.visibilities.session && !root.visibilities.launcher)
-        //             logout.focus = true;
-        //     }
-        // }
+        icon: "bedtime"
+        command: ["systemctl", "hibernate"]
+    }
+
+    SessionButton {
+        id: reboot
+
+        icon: "cached"
+        command: ["systemctl", "reboot"]
     }
 
     component SessionButton: Rectangle {
@@ -50,13 +56,45 @@ Column {
         implicitHeight: 80
 
         radius: Config.general.rounding.large
-        color: "#ffffff"
+        color: button.activeFocus ? "#484459" : "#201F25"
 
-        Keys.onEnterPressed: Quickshell.execDetached(button.command)
-        Keys.onReturnPressed: Quickshell.execDetached(button.command)
-        Keys.onEscapePressed: root.visibilities.session = false
+        MouseArea {
+            id: area
+
+            anchors.fill: parent
+
+            enabled: true
+            cursorShape: Qt.PointingHandCursor
+            hoverEnabled: true
+
+            onClicked: event => {
+                Quickshell.execDetached(button.command);
+            }
+
+            ClippingRectangle {
+                anchors.fill: parent
+
+                color: Qt.alpha(text.color, area.pressed ? 0.1 : area.containsMouse ? 0.08 : 0)
+                radius: button.radius
+
+                Rectangle {
+                    id: ripple
+
+                    radius: Config.general.rounding.full
+                    color: text.color
+                    opacity: 0
+
+                    transform: Translate {
+                        x: -ripple.width / 2
+                        y: -ripple.height / 2
+                    }
+                }
+            }
+        }
 
         Text {
+            id: text
+
             anchors.centerIn: parent
 
             property real fill
@@ -66,7 +104,7 @@ Column {
 
             renderType: Text.NativeRendering
             textFormat: Text.PlainText
-            color: "#ffffff"
+            color: button.activeFocus ? "#E5DFF9" : "#E5E1E9"
 
             font.bold: true
             font.family: Config.general.fontFamily.material
